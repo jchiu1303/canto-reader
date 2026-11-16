@@ -1,0 +1,23 @@
+{
+  "name": "canto-reader",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cantonese and Mandarin popup dictionary for Chrome. Read Chinese web pages and learn the words.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build:data": "node scripts/build-index.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "node scripts/build.mjs",
+    "verify": "npm run typecheck && npm test && npm run build",
+    "audit": "npm audit --audit-level=moderate"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.3.7",
+    "@types/node": "26.6.6",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  }
+}

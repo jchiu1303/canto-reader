@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Canto Reader - Settings and saved words</title>
+  <style>
+    body { margin: 0; padding: 24px; max-width: 900px; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1b1b1b; }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    h2 { font-size: 15px; margin: 24px 0 8px; border-bottom: 1px solid #e2e2e2; padding-bottom: 5px; }
+    p.sub { color: #666; margin: 0 0 18px; }
+    fieldset { border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; margin: 0; }
+    legend { font-weight: 600; padding: 0 6px; }
+    label { display: block; margin: 6px 0; }
+    input[type="number"] { width: 90px; padding: 4px 6px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid #eee; vertical-align: top; font-size: 13px; }
+    th { color: #666; font-weight: 600; }
+    button { padding: 5px 10px; font: inherit; font-size: 12px; background: #f2f2f2; border: 1px solid #d5d5d5; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #e6e6e6; }
+    .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    #status { color: #0b6b4f; min-height: 1.2em; font-size: 13px; }
+    .privacy { background: #f6f8fa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-top: 24px; font-size: 13px; color: #444; }
+    code { background: #eee; padding: 1px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>Canto Reader</h1>
+  <p class="sub">Cantonese + Mandarin popup dictionary. Read Chinese web pages and learn the words.</p>
+
+  <h2>Settings</h2>
+  <fieldset>
+    <legend>Popup</legend>
+    <label><input type="radio" name="mode" id="mode-cantonese" value="cantonese" checked> Cantonese first (Jyutping prominent)</label>
+    <label><input type="radio" name="mode" id="mode-mandarin" value="mandarin"> Mandarin first (Pinyin prominent)</label>
+    <label><input type="checkbox" id="require-alt"> Only show the popup while holding Alt</label>
+    <label>Hover delay (ms): <input type="number" id="hover-delay" min="0" max="1000" step="20" value="140"></label>
+  </fieldset>
+  <p id="status" aria-live="polite"></p>
+
+  <h2>Saved words <span id="saved-count" style="color:#777;font-size:13px;font-weight:normal"></span></h2>
+  <div class="bar">
+    <button id="export" type="button">Export CSV (Anki-friendly)</button>
+    <button id="clear" type="button">Clear all</button>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Word</th><th>Jyutping</th><th>Pinyin</th><th>Meaning</th><th>Hear</th><th></th></tr>
+    </thead>
+    <tbody id="saved-body"></tbody>
+  </table>
+
+  <div class="privacy">
+    <strong>Privacy</strong><br>
+    Everything stays on this device. The dictionary is bundled offline, there are no API keys, no accounts,
+    no network requests, no analytics and no telemetry. Saved words live only in
+    <code>chrome.storage.local</code> and are exported only when you click Export CSV.
+    The extension is inert until you enable it on a tab via the toolbar button or
+    <code>Alt+Shift+C</code>.
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

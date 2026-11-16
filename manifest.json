@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Canto Reader",
+  "short_name": "CantoReader",
+  "version": "0.1.0",
+  "description": "Cantonese + Mandarin popup dictionary. Read Chinese web pages and learn the words.",
+  "minimum_chrome_version": "114",
+  "action": {
+    "default_title": "Canto Reader: toggle reading mode",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "commands": {
+    "toggle-reading": {
+      "suggested_key": { "default": "Alt+Shift+C" },
+      "description": "Toggle Canto Reader on this page"
+    }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["data/index.tsv", "data/variants.json", "data/meta.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

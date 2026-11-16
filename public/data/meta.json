@@ -1,0 +1,37 @@
+{
+  "format": 1,
+  "license": "CC BY-SA 4.0 (see DATA_LICENSES.md)",
+  "sources": [
+    {
+      "name": "CC-CEDICT",
+      "license": "CC BY-SA 4.0",
+      "url": "https://www.mdbg.net/chinese/dictionary?page=cc-cedict"
+    },
+    {
+      "name": "CC-Canto 2017-02-02",
+      "license": "CC BY-SA 3.0",
+      "url": "https://cc-canto.org/"
+    },
+    {
+      "name": "CC-CEDICT Cantonese readings 2015-09-23 (Pleco)",
+      "license": "CC BY-SA 3.0",
+      "url": "https://cc-canto.org/"
+    },
+    {
+      "name": "Unihan (Unicode 18.0)",
+      "license": "Unicode License V3",
+      "url": "https://www.unicode.org/reports/tr38/"
+    }
+  ],
+  "counts": {
+    "cedict": 122438,
+    "afterReadings": 126931,
+    "afterCanto": 147242,
+    "unihanCharactersAdded": 32744,
+    "jyutpingFilledFromUnihan": 5429,
+    "pinyinCorrectedFromUnihan": 328,
+    "total": 179947
+  },
+  "variantPairs": 6840,
+  "skippedLines": 1
+}

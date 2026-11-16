@@ -1,0 +1,29 @@
+# Secrets and credentials (never commit these)
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+*.crx
+*.pfx
+*.keystore
+secrets/
+
+# Dependencies and build output
+node_modules/
+dist/
+.vite/
+coverage/
+*.log
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Raw downloaded dictionary sources (large; regenerate with npm run build:data)
+# The generated public/data/ index IS committed (needed at runtime).
+data/raw/

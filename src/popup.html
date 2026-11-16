@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Canto Reader</title>
+  <style>
+    body { margin: 0; padding: 14px; width: 260px; font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1b1b1b; }
+    h1 { font-size: 16px; margin: 0 0 4px; }
+    p { margin: 0 0 10px; }
+    #status { color: #555; font-size: 13px; }
+    button { display: block; width: 100%; margin: 6px 0; padding: 8px; font: inherit; font-size: 13px;
+             background: #f2f2f2; border: 1px solid #d5d5d5; border-radius: 7px; cursor: pointer; text-align: left; }
+    button:hover { background: #e6e6e6; }
+    #toggle { background: #eaf5ee; border-color: #9ccfb0; font-weight: 600; }
+    .hint { color: #777; font-size: 12px; border-top: 1px solid #e6e6e6; padding-top: 8px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Canto Reader</h1>
+  <p id="status">Checking this page...</p>
+  <button id="toggle" type="button">Enable on this page</button>
+  <button id="saved" type="button">Saved words</button>
+  <button id="options" type="button">Settings</button>
+  <p class="hint">Hover a Chinese word to see Jyutping, Pinyin and the meaning. Click the speaker to hear it, or Pin to keep the popup open.</p>
+  <script src="popup.js"></script>
+</body>
+</html>
