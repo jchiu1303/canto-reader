@@ -30,6 +30,7 @@
     "unihanCharactersAdded": 32744,
     "jyutpingFilledFromUnihan": 5429,
     "pinyinCorrectedFromUnihan": 328,
+    "glossReorderedCantoneseFirst": 259,
     "total": 179947
   },
   "variantPairs": 6840,

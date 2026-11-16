@@ -33,7 +33,13 @@ mkdirSync(OUT, { recursive: true });
 const dataLines = (p) =>
   readFileSync(p, 'utf8').split(/\r?\n/).filter((l) => l.length > 0 && !l.startsWith('#'));
 const clean = (s) => s.replace(/[\t\r\n\u001f]/g, ' ').trim();
-const splitGlosses = (raw) => raw.split('/').map(clean).filter(Boolean);
+// A bare "/" separates senses; " / " is punctuation *inside* a sense
+// (common in CC-Canto's adapted-from-CC-CEDICT lines).
+const splitGlosses = (raw) => raw
+  .replace(/ \/ /g, '\u001e')
+  .split('/')
+  .map((s) => clean(s).replace(/\u001e/g, ' / '))
+  .filter(Boolean);
 
 const RE_CEDICT = /^(\S+)\s+(\S+)\s+\[([^\]]*)\]\s+\/(.*)\/\s*$/;
 // CC-Canto appends ` # adapted from cc-cedict` to ~8.9k lines; allow that comment.
@@ -92,11 +98,12 @@ function mergeInto(e, { p, j, g, prepend }) {
     if (!readings.includes(j)) readings.push(j);
     e.j = readings.join(',');
   }
-  for (const gloss of g || []) {
-    if (!e.g.includes(gloss)) {
-      if (prepend) e.g.unshift(gloss);
-      else e.g.push(gloss);
-    }
+  if (g && g.length) {
+    // Prepend the whole batch at once so CC-Canto's Cantonese senses keep their
+    // original order (unshift() per item would reverse them).
+    const fresh = g.filter((x) => !e.g.includes(x));
+    if (prepend) e.g = [...fresh, ...e.g];
+    else e.g.push(...fresh);
   }
 }
 
@@ -204,6 +211,16 @@ for (const e of entries.values()) {
   }
 }
 
+// 4c. For a Cantonese-reading tool, put Cantonese-specific senses first.
+let glossReordered = 0;
+for (const e of entries.values()) {
+  const cant = e.g.filter((g) => /cantonese|\(cant\b/i.test(g));
+  if (cant.length === 0 || cant.length === e.g.length) continue;
+  const cantSet = new Set(cant);
+  e.g = [...cant, ...e.g.filter((g) => !cantSet.has(g))];
+  glossReordered++;
+}
+
 // 5. Emit.
 const rows = [];
 for (const e of entries.values()) {
@@ -228,6 +245,7 @@ const meta = {
     unihanCharactersAdded: unihanAdded,
     jyutpingFilledFromUnihan: jyutpingFilled,
     pinyinCorrectedFromUnihan: pinyinCorrected,
+    glossReorderedCantoneseFirst: glossReordered,
     total: entries.size,
   },
   variantPairs: Object.keys(s2t).length,

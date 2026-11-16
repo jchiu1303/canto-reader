@@ -97,40 +97,26 @@ function variantForms(form: string, v: Variants): string[] {
   return out;
 }
 
-/** Longest-match scan within [from, to). Appends matches with absolute offsets. */
-function longestMatch(
+/** Find the longest dictionary headword starting exactly at `from`. */
+function matchAt(
   text: string,
   index: DictIndex,
   from: number,
-  to: number,
   variants: Variants | null,
-  out: Match[],
-): void {
-  let i = from;
-  while (i < to) {
-    if (!isHan(text[i])) { i++; continue; }
-    const max = Math.min(index.maxLen, to - i);
-    let hit: Entry[] | undefined;
-    let len = 0;
-    for (let L = max; L >= 1; L--) {
-      const form = text.slice(i, i + L);
-      const bucket = index.byForm.get(form);
-      if (bucket && bucket.length > 0) { hit = bucket; len = L; break; }
-      if (variants && L === 1) {
-        for (const alt of variantForms(form, variants)) {
-          const altBucket = index.byForm.get(alt);
-          if (altBucket && altBucket.length > 0) { hit = altBucket; len = L; break; }
-        }
-        if (hit) break;
+): { entries: Entry[]; len: number } | null {
+  const max = Math.min(index.maxLen, text.length - from);
+  for (let L = max; L >= 1; L--) {
+    const form = text.slice(from, from + L);
+    const bucket = index.byForm.get(form);
+    if (bucket && bucket.length > 0) return { entries: bucket, len: L };
+    if (variants && L === 1) {
+      for (const alt of variantForms(form, variants)) {
+        const altBucket = index.byForm.get(alt);
+        if (altBucket && altBucket.length > 0) return { entries: altBucket, len: L };
       }
     }
-    if (hit) {
-      out.push({ start: i, end: i + len, text: text.slice(i, i + len), entries: hit });
-      i += len;
-    } else {
-      i++;
-    }
   }
+  return null;
 }
 
 let cachedSegmenter: Intl.Segmenter | null | undefined;
@@ -145,27 +131,40 @@ function getSegmenter(): Intl.Segmenter | null {
 
 /**
  * Return every dictionary match in `text`, with absolute offsets.
- * Intl.Segmenter constrains matches so a long headword cannot straddle a word
- * boundary; longest-match then resolves the headword inside each segment.
+ *
+ * The bundled dictionary is authoritative: longest-match runs across the whole
+ * text, so colloquial Cantonese compounds that ICU splits (我哋 -> 我 | 哋) are
+ * still resolved as one headword. Intl.Segmenter is used only to skip efficiently
+ * past stretches of text with no dictionary entry. Pass `segmenter: null` for
+ * pure longest-match with one-character skipping.
  */
 export function lookup(text: string, index: DictIndex, opts: LookupOptions = {}): Match[] {
   const out: Match[] = [];
   const variants = opts.variants ?? null;
   const seg = opts.segmenter === undefined ? getSegmenter() : opts.segmenter;
-  if (!seg) {
-    longestMatch(text, index, 0, text.length, variants, out);
-    return out;
-  }
-  for (const part of seg.segment(text)) {
-    if (!part.isWordLike) continue;
-    const from = part.index;
-    const to = from + part.segment.length;
-    let hasHan = false;
-    for (let k = from; k < to; k++) {
-      if (isHan(text[k])) { hasHan = true; break; }
+  const boundaries: number[] = [];
+  if (seg) {
+    for (const part of seg.segment(text)) {
+      boundaries.push(part.index + part.segment.length);
     }
-    if (!hasHan) continue;
-    longestMatch(text, index, from, to, variants, out);
+  }
+  let bp = 0;
+  let i = 0;
+  while (i < text.length) {
+    if (!isHan(text[i])) { i++; continue; }
+    const found = matchAt(text, index, i, variants);
+    if (found) {
+      out.push({
+        start: i,
+        end: i + found.len,
+        text: text.slice(i, i + found.len),
+        entries: found.entries,
+      });
+      i += found.len;
+    } else {
+      while (bp < boundaries.length && boundaries[bp] <= i) bp++;
+      i = bp < boundaries.length ? boundaries[bp] : i + 1;
+    }
   }
   return out;
 }

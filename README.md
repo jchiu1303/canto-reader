@@ -86,8 +86,9 @@ Chrome APIs. UI wiring is smoke-tested manually.
 
 - The ~14 MB index is fetched and parsed once per tab when reading mode is
   enabled (during idle, with a retry on first hover).
-- Chinese word boundaries come from `Intl.Segmenter` plus longest-match;
-  ambiguous splits are possible.
+- Chinese word boundaries come from dictionary longest-match (authoritative), with
+  Intl.Segmenter used only to skip text that has no dictionary entry; ambiguous
+  over-joining of adjacent headwords is possible but rare.
 - Spaced repetition, Anki sync and example sentences are deferred.
 - Colloquial Cantonese gloss coverage comes from CC-Canto, not words.hk.
 - Cantonese TTS depends on the voices installed on your OS (Chrome's offline
