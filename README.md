@@ -6,6 +6,9 @@ gloss, and audio, then save words you want to study.
 
 **Goal:** learn to read both languages while still understanding the page.
 
+**Resuming work:** see `docs/HANDOFF.md` (current state), `docs/KANBAN_INBOX.md`
+(work queue) and `docs/PROGRESS_LOG.md` (append-only trail).
+
 ## What v1 does
 
 - Hover (short dwell, or hold `Alt` for instant) a Chinese word to open a popup.
